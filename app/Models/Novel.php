@@ -51,4 +51,9 @@ class Novel extends Model
     {
         return $this->belongsToMany(Category::class);
     }
+
+    public function report(): MorphOne
+    {
+        return $this->morphOne(Report::class, 'reportable');
+    }
 }
