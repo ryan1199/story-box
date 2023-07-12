@@ -24,6 +24,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'ticket',
     ];
 
     /**
@@ -34,6 +35,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'ticket',
     ];
 
     /**
@@ -59,5 +61,20 @@ class User extends Authenticatable
     public function boxes()
     {
         return $this->hasMany(Box::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
+    public function report(): MorphOne
+    {
+        return $this->morphOne(Report::class, 'reportable');
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
     }
 }
