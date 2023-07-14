@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type="text"], input[type="email"], input[type="password"] {
+    @apply form-input;
+}
+input[type="checkbox"] {
+    @apply form-checkbox;
+}
+input[type="radio"] {
+    @apply form-radio;
+}
+textarea {
+    @apply form-textarea;
+}

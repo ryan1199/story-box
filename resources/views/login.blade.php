@@ -28,7 +28,7 @@
             <label for="remember" class="w-full flex flex-row">
                 <input type="checkbox" name="remember" id="remember" value=1
                 class="rounded 
-                {{-- appearance-none --}}
+                place-self-center
                 bg-gray-200
                 border-transparent
                 focus:border-transparent focus:bg-gray-200
