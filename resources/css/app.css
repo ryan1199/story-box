@@ -2,15 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    @apply select-none;
+}
+
+::-webkit-file-upload-button {
+    @apply p-1 text-white font-black text bg-sky-800 hover:bg-sky-700 active:bg-sky-500 rounded-3xl;
+}
+::-webkit-scrollbar {
+    @apply w-0 h-0;
+}
+::-webkit-scrollbar-button {
+    @apply w-1 bg-purple-500;
+}
+::-webkit-scrollbar-corner {
+    @apply w-1 bg-purple-500;
+}
+::-webkit-scrollbar-thumb {
+    @apply w-1 bg-sky-800 hover:bg-sky-700 active:bg-sky-500;
+}
+::-webkit-scrollbar-track {
+    @apply w-1 bg-pink-500;
+}
+::-webkit-scrollbar-track-piece {
+    @apply w-1 bg-pink-500;
+}
+
 input[type="text"], input[type="email"], input[type="password"] {
-    @apply form-input;
+    @apply w-full px-0.5 border-0 border-b-2 border-sky-800 focus:ring-0 focus:border-sky-500 bg-gray-100;
 }
 input[type="checkbox"] {
-    @apply form-checkbox;
+    @apply border-gray-300 border-2 text-black focus:border-gray-300 focus:ring-black rounded-full bg-gray-100;
 }
 input[type="radio"] {
-    @apply form-radio;
+    @apply border-gray-300 border-2 text-black focus:border-gray-300 focus:ring-black rounded-full bg-gray-100;
 }
 textarea {
-    @apply form-textarea;
+    @apply mt-0 block w-full px-0.5 border-0 border-b-2 border-sky-800 focus:ring-0 focus:border-sky-500 bg-gray-100;
+}
+
+nav div a, nav span {
+    @apply block m-2;
+}
+
+form label {
+    @apply p;
+}
+
+form label span {
+    @apply font-medium;
+}
+
+form div > span {
+    @apply p text-red-500;
+}
+
+form button {
+    @apply text font-black;
+}
+
+.text {
+    @apply font-mono antialiased align-middle inline-block;
+}
+.p {
+    @apply text font-normal tracking-normal text-base leading-relaxed;
+}
+.h1 {
+    @apply text font-black tracking-widest text-3xl leading-loose;
 }
