@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Hash;
 
 class ForgotPasswordController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('no-auth');
+        $this->middleware('throttle:forgot-password');
+    }
     public function sendEmail(SendResetPasswordEmailRequest $sendResetPasswordEmailRequest)
     {
         $validated = $sendResetPasswordEmailRequest->validated();

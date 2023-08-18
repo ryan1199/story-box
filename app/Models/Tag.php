@@ -13,13 +13,18 @@ class Tag extends Model
         'name',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+
     public function boxes()
     {
-        return $this->belongsToMany(Box::class);
+        return $this->belongsToMany(Box::class, 'box_tags')->withTimestamps();
     }
 
     public function novels()
     {
-        return $this->belongsToMany(Novel::class);
+        return $this->belongsToMany(Novel::class, 'novel_tags')->withTimestamps();
     }
 }

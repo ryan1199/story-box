@@ -29,7 +29,7 @@ class EmailVerificationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('admin@storybox.com', 'Mr.Admin'),
+            from: new Address(env('MAIL_FROM_ADDRESS'), 'StoryBox'),
             subject: 'Email Verification Request',
         );
     }

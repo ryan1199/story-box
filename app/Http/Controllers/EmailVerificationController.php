@@ -10,6 +10,11 @@ use Illuminate\Support\Str;
 
 class EmailVerificationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('no-auth');
+        $this->middleware('throttle:email-verification');
+    }
     public function sendEmail(EmailVerificationRequest $emailVerificationRequest)
     {
         $validated = $emailVerificationRequest->validated();

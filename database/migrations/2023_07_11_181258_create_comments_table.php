@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->string('content');
+            $table->string('content', 10000);
             $table->timestamps();
-            $table->string('commentable_type');
+            $table->string('commentable_type'); //novel, chapter
             $table->foreignId('commentable_id');
             $table->foreignIdFor(User::class)->constrained()->onUpdate('cascade')->onDelete('cascade');
         });

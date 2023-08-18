@@ -15,6 +15,7 @@ class Report extends Model
         'status',
         'reportable_id',
         'reportable_type',
+        'user_id'
     ];
 
     public function reportable(): MorphTo

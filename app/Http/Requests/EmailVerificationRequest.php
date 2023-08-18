@@ -22,7 +22,7 @@ class EmailVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email:rfc,dns', 'exists:users,email', 'min:5', 'max:150'],
+            'email' => ['required', 'email:rfc,dns', 'exists:users,email', 'min:5', 'max:255'],
         ];
     }
     public function messages(): array
@@ -32,7 +32,7 @@ class EmailVerificationRequest extends FormRequest
             'email.email' => 'Your email is no valid',
             'email.exists' => 'Your email is not found in our system, or try another email',
             'email.min' => 'Please email min length is 5 digit',
-            'email.max' => 'Please email max length is 150 digit'
+            'email.max' => 'Please email max length is 255 digit'
         ];
     }
 

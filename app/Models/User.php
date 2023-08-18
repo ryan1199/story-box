@@ -63,6 +63,16 @@ class User extends Authenticatable
         return $this->hasMany(Box::class);
     }
 
+    public function histories()
+    {
+        return $this->belongsToMany(Chapter::class, 'history')->withTimestamps();
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function reports()
     {
         return $this->hasMany(Report::class);

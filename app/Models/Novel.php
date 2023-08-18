@@ -14,8 +14,14 @@ class Novel extends Model
     protected $fillable = [
         'title',
         'slug',
+        'description',
         'user_id',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     public function user()
     {
@@ -39,21 +45,31 @@ class Novel extends Model
 
     public function boxes()
     {
-        return $this->belongsToMany(Box::class);
+        return $this->belongsToMany(Box::class, 'box_novel')->withPivot('novel_id', 'box_id')->withTimestamps();
     }
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class, 'novel_tags')->withPivot('novel_id', 'tag_id')->withTimestamps();
     }
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'category_novels')->withPivot('novel_id', 'category_id')->withTimestamps();
+    }
+
+    public function customCategories()
+    {
+        return $this->belongsToMany(Category::class, 'category_novels')->wherePivotIn('category_id', [3,4,5])->withPivot('novel_id', 'category_id')->withTimestamps();
     }
 
     public function report(): MorphOne
     {
         return $this->morphOne(Report::class, 'reportable');
+    }
+
+    public function search()
+    {
+        return $this->hasOne(NovelCategoryTagSearch::class);
     }
 }

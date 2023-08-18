@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Auth;
 
 class UserLoginController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('no-auth');
+        $this->middleware('throttle:login');
+    }
     /**
      * Handle the incoming request.
      */

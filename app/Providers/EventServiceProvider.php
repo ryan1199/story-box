@@ -6,6 +6,8 @@ use App\Events\EmailVerificationProcessed;
 use App\Events\ForgotPasswordProcessed;
 use App\Listeners\SendEmailVerificationNotification as ListenersSendEmailVerificationNotification;
 use App\Listeners\SendForgotPasswordNotification;
+use App\Models\Novel;
+use App\Observers\NovelObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -35,7 +37,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Novel::observe(NovelObserver::class);
     }
 
     /**

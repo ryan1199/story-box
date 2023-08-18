@@ -14,9 +14,10 @@ return new class extends Migration
     {
         Schema::create('boxes', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug')->unique(); //title + (strtotime("now"))
-            $table->string('description');
+            $table->string('title', 1000);
+            $table->string('slug', 2000)->nullable()->unique(); //title + (strtotime("now"))
+            $table->string('description', 10000);
+            $table->string('visible', 1000);
             $table->timestamps();
             $table->foreignIdFor(User::class)->constrained()->onUpdate('cascade')->onDelete('cascade');
         });

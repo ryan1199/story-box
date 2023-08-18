@@ -2,7 +2,18 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AuthCustom;
+use App\Http\Middleware\BoxExist;
+use App\Http\Middleware\CategoryExist;
+use App\Http\Middleware\ChapterExist;
+use App\Http\Middleware\CommentExist;
+use App\Http\Middleware\EnsureTicketIsValid;
+use App\Http\Middleware\EnsureUserIsVerified;
 use App\Http\Middleware\MakeSureEmailAndTicketIsValid;
+use App\Http\Middleware\NoAuth;
+use App\Http\Middleware\NovelExist;
+use App\Http\Middleware\TagExist;
+use App\Http\Middleware\UserExist;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -65,6 +76,17 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'valid-ticket' => MakeSureEmailAndTicketIsValid::class
+        'no-auth' => NoAuth::class,
+        'custom-auth' => AuthCustom::class,
+        'valid-ticket' => MakeSureEmailAndTicketIsValid::class,
+        'user-verified' => EnsureUserIsVerified::class,
+        'ticket-valid' => EnsureTicketIsValid::class,
+        'user-exist' => UserExist::class,
+        'novel-exist' => NovelExist::class,
+        'chapter-exist' => ChapterExist::class,
+        'box-exist' => BoxExist::class,
+        'comment-exist' => CommentExist::class,
+        'tag-exist' => TagExist::class,
+        'category-exist' => CategoryExist::class,
     ];
 }

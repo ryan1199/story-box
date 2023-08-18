@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('reason');
-            $table->string('status')->default('On Voting');
+            $table->string('reason', 10000);
+            $table->string('status', 1000)->default('On Voting');
             $table->timestamps();
-            $table->string('reportable_type');
+            $table->string('reportable_type'); //user, novel, chapter, box, comment
             $table->foreignId('reportable_id');
             $table->foreignIdFor(User::class)->constrained()->onUpdate('cascade')->onDelete('cascade');
         });

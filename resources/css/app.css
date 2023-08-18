@@ -7,7 +7,7 @@ body {
 }
 
 ::-webkit-file-upload-button {
-    @apply p-1 text-white font-black text bg-sky-800 hover:bg-sky-700 active:bg-sky-500 rounded-3xl;
+    @apply p-1 text-gray-100 font-black text bg-sky-800 hover:bg-sky-700 active:bg-sky-500 rounded-lg;
 }
 ::-webkit-scrollbar {
     @apply w-0 h-0;
@@ -32,32 +32,32 @@ input[type="text"], input[type="email"], input[type="password"] {
     @apply w-full px-0.5 border-0 border-b-2 border-sky-800 focus:ring-0 focus:border-sky-500 bg-gray-100;
 }
 input[type="checkbox"] {
-    @apply border-gray-300 border-2 text-black focus:border-gray-300 focus:ring-black rounded-full bg-gray-100;
+    @apply border-gray-300 border-2 text-gray-950 focus:border-gray-300 focus:ring-gray-950 rounded-full bg-gray-100;
 }
 input[type="radio"] {
-    @apply border-gray-300 border-2 text-black focus:border-gray-300 focus:ring-black rounded-full bg-gray-100;
+    @apply border-gray-300 border-2 text-gray-950 focus:border-gray-300 focus:ring-gray-950 rounded-full bg-gray-100;
 }
 textarea {
     @apply mt-0 block w-full px-0.5 border-0 border-b-2 border-sky-800 focus:ring-0 focus:border-sky-500 bg-gray-100;
 }
 
-nav div a, nav span {
-    @apply block m-2;
+.nav a, .nav span {
+    @apply block m-1;
 }
 
-form label {
+.form-label {
     @apply p;
 }
 
-form label span {
+.form-span {
     @apply font-medium;
 }
 
-form div > span {
+.form-error {
     @apply p text-red-500;
 }
 
-form button {
+.form-button {
     @apply text font-black;
 }
 
@@ -69,4 +69,10 @@ form button {
 }
 .h1 {
     @apply text font-black tracking-widest text-3xl leading-loose;
+}
+.h2 {
+    @apply text font-black tracking-widest text-2xl leading-loose;
+}
+.h3 {
+    @apply text font-black tracking-widest text-xl leading-loose;
 }

@@ -13,13 +13,18 @@ class Category extends Model
         'name',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
+
     public function boxes()
     {
-        return $this->belongsToMany(Box::class);
+        return $this->belongsToMany(Box::class, 'box_categories')->withPivot('category_id', 'novel_id')->withTimestamps();
     }
 
     public function novels()
     {
-        return $this->belongsToMany(Novel::class);
+        return $this->belongsToMany(Novel::class, 'box_novel')->withPivot('category_id', 'novel_id')->withTimestamps();
     }
 }

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('custom-auth');
+    }
     /**
      * Handle the incoming request.
      */
@@ -17,7 +21,7 @@ class LogoutController extends Controller
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            session()->flash('success', 'Logout done');
+            session()->flash('success', 'Done');
             return redirect()->route('home');
         }
         session()->flash('error', 'You are not logged in');

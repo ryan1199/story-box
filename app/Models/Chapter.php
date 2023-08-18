@@ -18,6 +18,11 @@ class Chapter extends Model
         'novel_id',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
@@ -26,6 +31,11 @@ class Chapter extends Model
     public function novel()
     {
         return $this->belongsTo(Novel::class);
+    }
+
+    public function histories()
+    {
+        return $this->belongsToMany(User::class, 'history')->withTimestamps();
     }
 
     public function report(): MorphOne
