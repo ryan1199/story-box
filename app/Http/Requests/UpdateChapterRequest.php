@@ -23,8 +23,8 @@ class UpdateChapterRequest extends FormRequest
     {
         // dd($this->request);
         return [
-            'title' => 'required|regex:/^[a-zA-Z0-9]+(?:[\s.]+[a-zA-Z0-9]+)*$/|min:2|max:500',
-            'content' => 'required|regex:/^[a-zA-Z0-9]+(?:[\s.]+[a-zA-Z0-9]+)*$/|min:2|max:10000'
+            'title' => 'required|string|min:2|max:500',
+            'content' => 'required|string|min:2|max:10000'
         ];
     }
 
@@ -32,11 +32,11 @@ class UpdateChapterRequest extends FormRequest
     {
         return [
             'title.required' => 'Please input title for the chapter',
-            'title.regex' => 'Please title only contain letter and whitespace',
+            'title.string' => 'Please title only contain string',
             'title.min' => 'Please title min length is 2 digit',
             'title.max' => 'Please title max length is 500 digit',
             'content.required' => 'Please input content for the chapter',
-            'content.regex' => 'Please content only contain letter and whitespace',
+            'content.string' => 'Please content only contain string',
             'content.min' => 'Please content min length is 2 digit',
             'content.max' => 'Please content max length is 10000 digit',
         ];

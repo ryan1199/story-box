@@ -10,6 +10,7 @@ use App\Http\Middleware\CommentExist;
 use App\Http\Middleware\EnsureTicketIsValid;
 use App\Http\Middleware\EnsureUserIsVerified;
 use App\Http\Middleware\MakeSureEmailAndTicketIsValid;
+use App\Http\Middleware\MakeSureNotReported;
 use App\Http\Middleware\NoAuth;
 use App\Http\Middleware\NovelExist;
 use App\Http\Middleware\TagExist;
@@ -88,5 +89,6 @@ class Kernel extends HttpKernel
         'comment-exist' => CommentExist::class,
         'tag-exist' => TagExist::class,
         'category-exist' => CategoryExist::class,
+        'not-reported' => MakeSureNotReported::class,
     ];
 }

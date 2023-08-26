@@ -9,7 +9,7 @@
             <p class="p text-gray-100">{{ $chapter->title }}</p>
         </div>
         <div class="grid grid-cols-1 gap-4">
-            <p class="p text-gray-100">{{ $chapter->content }}</p>
+            <p class="p text-gray-100 whitespace-break-spaces">{{ $chapter->content }}</p>
         </div>
         <div class="grid grid-cols-2 gap-2">
             <div class="justify-self-start">

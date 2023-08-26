@@ -23,7 +23,7 @@ class UpdateTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'alpha_dash', Rule::unique('tags', 'name')->ignore($this->tag->id), 'min:1', 'max:50']
+            'name' => ['required', 'alpha_dash', Rule::unique('tags', 'name')->ignore($this->tag->id), Rule::unique('categories', 'name'), 'min:1', 'max:50']
         ];
     }
 

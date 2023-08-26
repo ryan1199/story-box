@@ -52,9 +52,11 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 @forelse ($box->novels as $novel)
-                    <div class="p-2 grid grid-cols-1 gap-2 border border-gray-100 rounded-lg">
+                    <div class="max-h-96 p-2 grid grid-cols-1 gap-2 border border-gray-100 rounded-lg overflow-y-auto">
                         <div class="grid grid-cols-1 gap-2">
-                            <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}" class="w-full border border-gray-100 rounded-lg">
+                            <div class="max-h-60 overflow-y-auto">
+                                <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}" class="w-full border border-gray-100 rounded-lg">
+                            </div>
                             <div class="grid grid-cols-1 gap-1">
                                 <p class="p text-gray-100 break-all"><a href="{{ route('novels.show', $novel->slug) }}">{{ $novel->title }}</a></p>
                                 <p class="p text-gray-100 break-all">Added by <a href="{{ route('users.show', $novel->user->username) }}">{{ $novel->user->username }}</a></p>

@@ -23,7 +23,7 @@ class StoreTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'alpha_dash', Rule::unique('tags', 'name'), 'min:1', 'max:50']
+            'name' => ['required', 'alpha_dash', Rule::unique('tags', 'name'), Rule::unique('categories', 'name'), 'min:1', 'max:50']
         ];
     }
 

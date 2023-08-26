@@ -16,8 +16,10 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 @forelse ($new_novels as $novel)
-                    <div class="max-h-60 grid grid-cols-1 gap-2 content-start overflow-y-auto">
-                        <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}">
+                    <div class="max-h-96 grid grid-cols-1 gap-2 content-start overflow-y-auto">
+                        <div class="max-h-60 overflow-y-auto">
+                            <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}">
+                        </div>
                         <p class="p text-gray-100 break-all"><a href="{{ route('novels.show', $novel->slug) }}">{{ $novel->title }}</a></p>
                         <div class="w-full h-fit flex flex-row flex-wrap justify-start items-start">
                             <p class="w-fit h-fit mr-1 mb-1 p text-gray-100">Categories</p>
@@ -51,8 +53,10 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 @forelse ($update_novels as $novel)
-                    <div class="max-h-60 grid grid-cols-1 gap-2 content-start overflow-y-auto">
-                        <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}">
+                    <div class="max-h-96 grid grid-cols-1 gap-2 content-start overflow-y-auto">
+                        <div class="max-h-60 overflow-y-auto">
+                            <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}">
+                        </div>
                         <p class="p text-gray-100 break-all"><a href="{{ route('novels.show', $novel->slug) }}">{{ $novel->title }}</a></p>
                         <div class="w-full h-fit flex flex-row flex-wrap justify-start items-start">
                             <p class="w-fit h-fit mr-1 mb-1 p text-gray-100">Categories</p>

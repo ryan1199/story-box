@@ -48,9 +48,11 @@
         </div>
         <div class="w-full h-full grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-4 grid-flow-row auto-rows-min">
             @forelse ($user->novels as $novel)
-                <div class="h-fit max-h-72 flex flex-col justify-start items-start border border-gray-100 rounded-lg overflow-clip overflow-y-auto">
+                <div class="h-fit max-h-96 flex flex-col justify-start items-start border border-gray-100 rounded-lg overflow-clip overflow-y-auto">
                     <div class="w-full h-fit p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-2">
-                        <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="novel cover {{ $novel->title }}" class="w-full h-fit border border-gray-100 rounded-lg">
+                        <div class="max-h-60 overflow-y-auto">
+                            <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="novel cover {{ $novel->title }}" class="w-full h-fit border border-gray-100 rounded-lg">
+                        </div>
                         <div class="w-full flex flex-row space-x-2 justify-between items-start">
                             <div class="w-full flex flex-col space-y-2 justify-center items-start">
                                 <p class="p text-gray-100 text-left"><a href="{{ route('novels.show', $novel) }}">{{ $novel->title }}</a></p>

@@ -28,6 +28,8 @@ class ChapterController extends Controller
         $this->middleware('chapter-exist', ['except' => ['index', 'create', 'store']]);
         $this->middleware('comment-exist', ['only' => ['commentDestroy']]);
         $this->middleware('throttle:global', ['except' => ['show']]);
+        $this->middleware('not-reported:App\Models\Chapter', ['only' => ['edit', 'destroy']]);
+        $this->middleware('not-reported:App\Models\Comment', ['only' => ['commentDestroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -82,11 +84,17 @@ class ChapterController extends Controller
         $chapter = Chapter::with(['comments.report', 'report'])->where('id', $chapter->id)->first();
         $chapters = Chapter::where('novel_id', $novel->id)->orderBy('title', 'asc')->get();
         $current_chapter = $chapters->pluck('id')->search($chapter->id);
+        // dd($current_chapter);
         switch ($current_chapter)
         {
             case 0 :
                 $prev = null;
-                $next = $chapters[$current_chapter + 1];
+                if($chapters->count() > 1)
+                {
+                    $next = $chapters[$current_chapter + 1];
+                } else {
+                    $next = null;
+                }
                 break;
             case $chapters->count() - 1 :
                 $prev = $chapters[$current_chapter - 1];
@@ -143,14 +151,20 @@ class ChapterController extends Controller
         Gate::authorize('delete-chapter', [$novel, $chapter]);
         DB::transaction(function () use ($novel, $chapter) {
             $report = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
-            $report->votes()->delete();
-            $report->delete();
+            if($report != null)
+            {
+                $report->votes()->delete();
+                $report->delete();
+            }
             $comments = $chapter->comments()->get();
             foreach($comments as $comment)
             {
                 $report = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
-                $report->votes()->delete();
-                $report->delete();
+                if($report != null)
+                {
+                    $report->votes()->delete();
+                    $report->delete();
+                }
             }
             $chapter->comments()->delete();
             $chapter->delete();
@@ -176,8 +190,11 @@ class ChapterController extends Controller
         Gate::authorize('delete-comment-chapter', $comment);
         DB::transaction(function () use ($comment) {
             $report = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
-            $report->votes()->delete();
-            $report->delete();
+            if($report != null)
+            {
+                $report->votes()->delete();
+                $report->delete();
+            }
             Comment::where('id', $comment->id)->delete();
         });
         session()->flash('success', 'Successfully delete the comment');

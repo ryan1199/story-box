@@ -76,7 +76,7 @@
             </div>
         </div>
         {{-- novel --}}
-        <div class="p-3 lg:col-span-2 grid grid-cols-1 gap-2">
+        <div class="p-3 lg:col-span-2 grid grid-cols-1 gap-2 content-start">
             <div class="w-fit">
                 <h1 class="h1 text-gray-100 text-left">Novels</h1>
             </div>
@@ -84,7 +84,9 @@
                 @forelse ($novels as $novel)
                     <div class="h-fit max-h-96 p-2 grid grid-cols-1 gap-2 content-start border border-gray-100 rounded-lg overflow-clip overflow-y-auto">
                         <div class="w-full h-fit grid grid-cols-1 gap-2">
-                            <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="novel cover {{ $novel->title }}" class="w-full h-fit border border-gray-100 rounded-lg">
+                            <div class="max-h-60 overflow-y-auto">
+                                <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="novel cover {{ $novel->title }}" class="w-full h-fit border border-gray-100 rounded-lg">
+                            </div>
                             <div class="w-full flex flex-col space-y-2 justify-start items-start">
                                 <p class="p text-gray-100 text-left break-all"><a href="{{ route('novels.show', $novel) }}">{{ $novel->title }}</a></p>
                                 <p class="p text-gray-100 text-left break-all">Added by <a href="{{ route('users.show', $novel->user->username) }}">{{ $novel->user->username }}</a></p>

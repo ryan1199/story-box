@@ -31,6 +31,8 @@ class NovelController extends Controller
         $this->middleware('novel-exist', ['except' => ['index', 'create', 'store', 'search']]);
         $this->middleware('comment-exist', ['only' => ['commentDestroy']]);
         $this->middleware('throttle:global', ['except' => ['index', 'show', 'search']]);
+        $this->middleware('not-reported:App\Models\Novel', ['only' => ['edit', 'destroy']]);
+        $this->middleware('not-reported:App\Models\Comment', ['only' => ['commentDestroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -223,8 +225,11 @@ class NovelController extends Controller
             foreach($comments as $comment)
             {
                 $report = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
-                $report->votes()->delete();
-                $report->delete();
+                if($report != null)
+                {
+                    $report->votes()->delete();
+                    $report->delete();
+                }
             }
             $novel->comments()->delete();
     
@@ -233,8 +238,11 @@ class NovelController extends Controller
             foreach($chapters as $chapter)
             {
                 $report = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
-                $report->votes()->delete();
-                $report->delete();
+                if($report != null)
+                {
+                    $report->votes()->delete();
+                    $report->delete();
+                }
             }
             foreach($novel->chapters as $chapter)
             {
@@ -242,8 +250,11 @@ class NovelController extends Controller
                 foreach($comments as $comment)
                 {
                     $report = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
-                    $report->votes()->delete();
-                    $report->delete();
+                    if($report != null)
+                    {
+                        $report->votes()->delete();
+                        $report->delete();
+                    }
                 }
                 $chapter->comments()->delete();
             }
@@ -254,8 +265,11 @@ class NovelController extends Controller
 
             // report <- vote
             $report = Report::where('reportable_type', 'App\Models\Novel')->where('reportable_id', $novel->id)->first();
-            $report->votes()->delete();
-            $report->delete();
+            if($report != null)
+            {
+                $report->votes()->delete();
+                $report->delete();
+            }
 
             // history
             History::where('novel_id', $novel->id)->delete();
@@ -307,8 +321,11 @@ class NovelController extends Controller
         Gate::authorize('delete-comment-novel', $comment);
         DB::transaction(function () use ($comment) {
             $report = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
-            $report->votes()->delete();
-            $report->delete();
+            if($report != null)
+            {
+                $report->votes()->delete();
+                $report->delete();
+            }
             Comment::where('id', $comment->id)->delete();
         });
         session()->flash('success', 'Successfully delete the comment');

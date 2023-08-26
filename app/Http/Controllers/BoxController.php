@@ -24,6 +24,7 @@ class BoxController extends Controller
         $this->middleware('box-exist', ['except' => ['index', 'create', 'store']]);
         $this->middleware('novel-exist', ['only' => ['add', 'remove']]);
         $this->middleware('throttle:global', ['except' => ['index', 'show', 'add', 'remove']]);
+        $this->middleware('not-reported:App\Models\Box', ['only' => ['edit', 'destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -140,8 +141,11 @@ class BoxController extends Controller
             $box->categories()->detach();
             $box->novels()->detach();
             $report = Report::where('reportable_type', 'App\Models\Box')->where('reportable_id', $box->id)->first();
-            $report->votes()->delete();
-            $report->delete();
+            if($report != null)
+            {
+                $report->votes()->delete();
+                $report->delete();
+            }
             $box->delete();
         });
         session()->flash('success', 'Successfully delete the box');

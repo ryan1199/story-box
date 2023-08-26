@@ -314,7 +314,9 @@
                         @forelse ($comments_reported as $comment_reported)
                             <div class="h-fit p-2 grid grid-cols-1 gap-2 border border-gray-100 rounded-lg divide-y-2 divide-gray-100">
                                 <div class="grid grid-cols-1 gap-2">
-                                    <p class="p text-gray-100 break-all">{{ $comment_reported->content }}</p>
+                                    <div class="max-h-40 overflow-y-auto">
+                                        <p class="p text-gray-100 break-all">{{ $comment_reported->content }}</p>
+                                    </div>
                                     <p class="p text-gray-100 break-all">Comment by <a href="{{ route('users.show', $comment_reported->user->username) }}">{{ $comment_reported->user->username }}</a></p>
                                     <p class="p text-gray-100 break-all">{{ $comment_reported->report->reason }}</p>
                                     <div class="flex flex-row space-x-2 justify-between">

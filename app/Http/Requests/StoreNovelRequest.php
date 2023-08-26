@@ -24,11 +24,11 @@ class StoreNovelRequest extends FormRequest
     {
         // dd($this->request);
         return [
-            'title' => 'required|regex:/^[a-zA-Z0-9]+(?:[\s.]+[a-zA-Z0-9]+)*$/|min:2|max:500',
-            'description' => 'required|regex:/^[a-zA-Z0-9]+(?:[\s.]+[a-zA-Z0-9]+)*$/|min:2|max:10000',
+            'title' => 'required|string|min:2|max:500',
+            'description' => 'required|string|min:2|max:10000',
             'picture' => ['required', 'mimes:jpg,jpeg,png', File::image()->min(1)->max(5120)],
-            'categories' => 'required|max:50', //jumlah tag 50
-            'categories.*' => 'exists:categories,name|max:50', //panjang tag
+            'categories' => 'required|max:50', //jumlah category 50
+            'categories.*' => 'exists:categories,name|max:50', //panjang category
             'tags' => 'required|max:50',
             'tags.*' => 'exists:tags,name|max:50'
         ];
@@ -38,11 +38,11 @@ class StoreNovelRequest extends FormRequest
     {
         return [
             'title.required' => 'Please input title for the novel',
-            'title.regex' => 'Please title only contain letter and whitespace',
+            'title.string' => 'Please title only string',
             'title.min' => 'Please title min length is 2 digit',
             'title.max' => 'Please title max length is 500 digit',
             'description.required' => 'Please input description for the novel',
-            'description.regex' => 'Please description only contain letter and whitespace',
+            'description.string' => 'Please description only string',
             'description.min' => 'Please description min length is 2 digit',
             'description.max' => 'Please description max length is 10000 digit',
             'picture.required' => 'Please input picture for the novel',

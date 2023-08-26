@@ -5,9 +5,9 @@
 @section('content')
     <div class="w-full h-fit grid grid-cols-1 lg:grid-cols-1 gap-4 grid-flow-row auto-rows-min">
         <div class="grid grid-cols-1 gap-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}">
-                <div @if ($boxes_with_novels != null && $boxes_without_novels != null && $user_box != null) x-data="{ addBox: false }" @endif class="flex flex-col">
+            <div class="grid grid-flow-row-dense grid-cols-2 lg:grid-cols-3 gap-4">
+                <img src="{{ asset('storage/novel/'.$novel->image->url) }}" alt="{{ $novel->title }}" class="col-span-2 lg:col-span-1">
+                <div @if ($boxes_with_novels != null && $boxes_without_novels != null && $user_box != null) x-data="{ addBox: false }" @endif class="col-span-2 flex flex-col">
                     <h1 class="h1 text-gray-100 text-left break-all">{{ $novel->title }}</h1>
                     <p class="mb-2 p text-gray-100 text-left">{{ count($novel->chapters) }} chapters</p>
                     <p class="mb-2 p text-gray-100 text-left">Updated {{ now()->sub($novel->updated_at)->diffForHumans() }}</p>
@@ -63,9 +63,9 @@
                     @endauth
                 </div>
             </div>
-            <div class="grid grid-cols-1 gap-4">
+            <div class="max-w-2xl grid grid-cols-1 gap-4">
                 <div class="w-full h-fit">
-                    <p class="p text-gray-100 break-all">{{ $novel->description }}</p>
+                    <p class="p text-gray-100 whitespace-break-spaces">{{ $novel->description }}</p>
                 </div>
                 <div class="w-full h-fit flex flex-row flex-wrap justify-start items-start">
                     <p class="w-fit h-fit mr-1 mb-1 p text-gray-100">Categories</p>
@@ -129,7 +129,7 @@
                                         <p class="p text-gray-100 break-all"><a href="{{ route('users.show', $users_comment->username) }}">{{ $users_comment->username }}</a></p>
                                     </div>
                                     <div class="grid grid-cols-1 gap-2 content-stretch">
-                                        <p class="p text-gray-100 break-all">{{ $comment->content }}</p>
+                                        <p class="p text-gray-100 whitespace-break-spaces">{{ $comment->content }}</p>
                                         <div class="w-full grid grid-cols-10 gap-2 place-content-start">
                                             @auth
                                                 @if (Auth::user()->id == $users_comment->id)

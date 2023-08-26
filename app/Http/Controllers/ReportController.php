@@ -49,27 +49,300 @@ class ReportController extends Controller
                         {
                             case 'App\Models\User' :
                                 $user = User::where('id', $report->reportable_id)->with(['image', 'novels.image', 'novels.chapters.comments', 'novels.categories', 'novels.tags', 'novels.search', 'novels.comments', 'boxes', 'histories'])->first();
+                                if($user != null)
+                                {
+                                    $old_user_image_url = $user->image->url;
+                                    DB::transaction(function () use ($user) {
+                                        // image
+                                        $user->image->delete();
+                                
+                                        // report <- vote
+                                        Vote::where('user_id', $user->id)->delete();
+                                        $reports = Report::where('user_id', $user->id)->get();
+                                        foreach($reports as $report)
+                                        {
+                                            $report->votes()->delete();
+                                        }
+                                        Report::where('user_id', $user->id)->delete();
+                                        // Report::where('reportable_type', 'App\Models\User')->where('reportable_id', $user->id)->delete();
+        
+                                        // comment
+                                        $comments = Comment::where('user_id', $user->id)->get();
+                                        foreach($comments as $comment)
+                                        {
+                                            $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                            if($reported_comment != null)
+                                            {
+                                                $reported_comment->votes()->delete();
+                                                $reported_comment->delete();
+                                            }
+                                        }
+                                        Comment::where('user_id', $user->id)->delete();
+        
+                                        // history
+                                        History::where('user_id', $user->id)->delete();
+                                
+                                        // box <- pivot
+                                        foreach($user->boxes as $box)
+                                        {
+                                            $reported_box = Report::where('reportable_type', 'App\Models\Box')->where('reportable_id', $box->id)->first();
+                                            if($reported_box != null)
+                                            {
+                                                $reported_box->votes()->delete();
+                                                $reported_box->delete();
+                                            }
+                                            $box->tags()->detach();
+                                            $box->categories()->detach();
+                                            $box->novels()->detach();
+                                        }
+                                        $user->boxes()->delete();
+                                
+                                        // novel <- chapter <- image <- pivot
+                                        foreach($user->novels as $novel)
+                                        {
+                                            // image
+                                            $novel->image->delete();
+        
+                                            // categories
+                                            $novel->categories()->detach();
+        
+                                            // tags
+                                            $novel->tags()->detach();
+        
+                                            // search
+                                            $novel->search()->delete();
+        
+                                            // comment
+                                            $comments = $novel->comments()->get();
+                                            foreach($comments as $comment)
+                                            {
+                                                $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                                if($reported_comment != null)
+                                                {
+                                                    $reported_comment->votes()->delete();
+                                                    $reported_comment->delete();
+                                                }
+                                            }
+                                            $novel->comments()->delete();
+        
+                                            // chapter
+                                            $chapters = $novel->chapters()->get();
+                                            foreach($chapters as $chapter)
+                                            {
+                                                $reported_chapter = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
+                                                if($reported_chapter != null)
+                                                {
+                                                    $reported_chapter->votes()->delete();
+                                                    $reported_chapter->delete();
+                                                }
+                                            }
+                                            foreach($novel->chapters as $chapter)
+                                            {
+                                                $comments = $chapter->comments()->get();
+                                                foreach($comments as $comment)
+                                                {
+                                                    $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                                    if($reported_comment != null)
+                                                    {
+                                                        $reported_comment->votes()->delete();
+                                                        $reported_comment->delete();
+                                                    }
+                                                }
+                                                $chapter->comments()->delete();
+                                            }
+                                            $novel->chapters()->delete();
+        
+                                            // box
+                                            $novel->boxes()->detach();
+        
+                                            // report <- vote
+                                            $reported_novel = Report::where('reportable_type', 'App\Models\Novel')->where('reportable_id', $novel->id)->first();
+                                            if($reported_novel != null)
+                                            {
+                                                $reported_novel->votes()->delete();
+                                                $reported_novel->delete();
+                                            }
+        
+                                            // history
+                                            History::where('novel_id', $novel->id)->delete();
+                                            Storage::delete('novel/'.$novel->image->url);
+                                        }
+                                        $user->novels()->delete();
+                                
+                                        // user
+                                        $user->delete();
+                                    });
+                                    Storage::delete('profile/'.$old_user_image_url);
+                                }
+                                break;
+                            case 'App\Models\Novel' :
+                                $novel = Novel::with(['image', 'chapters', 'categories', 'tags', 'comments', 'boxes'])->where('id', $report->reportable_id)->first();
+                                if($novel != null)
+                                {
+                                    $old_novel_image_url = $novel->image->url;
+                                    DB::transaction(function () use ($novel) {
+                                        // image
+                                        $novel->image->delete();
+                                
+                                        // categories
+                                        $novel->categories()->detach();
+                                        
+                                        // tags
+                                        $novel->tags()->detach();
+                                
+                                        // search
+                                        $novel->search()->delete();
+        
+                                        // comment
+                                        $comments = $novel->comments()->get();
+                                        foreach($comments as $comment)
+                                        {
+                                            $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                            if($reported_comment != null)
+                                            {
+                                                $reported_comment->votes()->delete();
+                                                $reported_comment->delete();
+                                            }
+                                        }
+                                        $novel->comments()->delete();
+                                
+                                        // chapter
+                                        $chapters = $novel->chapters()->get();
+                                        foreach($chapters as $chapter)
+                                        {
+                                            $reported_chapter = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
+                                            if($reported_chapter != null)
+                                            {
+                                                $reported_chapter->votes()->delete();
+                                                $reported_chapter->delete();
+                                            }
+                                        }
+                                        foreach($novel->chapters as $chapter)
+                                        {
+                                            $comments = $chapter->comments()->get();
+                                            foreach($comments as $comment)
+                                            {
+                                                $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                                if($reported_comment != null)
+                                                {
+                                                    $reported_comment->votes()->delete();
+                                                    $reported_comment->delete();
+                                                }
+                                            }
+                                            $chapter->comments()->delete();
+                                        }
+                                        $novel->chapters()->delete();
+                                
+                                        // box
+                                        $novel->boxes()->detach();
+        
+                                        // history
+                                        History::where('novel_id', $novel->id)->delete();
+                                
+                                        // novel
+                                        $novel->delete();
+                                    });
+                                    Storage::delete('novel/'.$old_novel_image_url);
+                                }
+                                break;
+                            case 'App\Models\Chapter' :
+                                $chapter = Chapter::where('id', $report->reportable_id)->first();
+                                if($chapter != null)
+                                {
+                                    DB::transaction(function () use ($chapter) {
+                                        $comments = $chapter->comments()->get();
+                                        foreach($comments as $comment)
+                                        {
+                                            $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                            if($reported_comment != null)
+                                            {
+                                                $reported_comment->votes()->delete();
+                                                $reported_comment->delete();
+                                            }
+                                        }
+                                    });
+                                    $chapter->comments()->delete();
+                                    $chapter->delete();
+                                }
+                                break;
+                            case 'App\Models\Box' :
+                                $box = Box::where('id', $report->reportable_id)->first();
+                                if($box != null)
+                                {
+                                    DB::transaction(function () use ($box) {
+                                        $box->tags()->detach();
+                                        $box->categories()->detach();
+                                        $box->novels()->detach();
+                                        $box->delete();
+                                    });
+                                }
+                                break;
+                            case 'App\Models\Comment' :
+                                Comment::where('id', $report->reportable_id)->delete();
+                                break;
+                            default :
+                                $status = 'error';
+                        }
+                        $status = 'accepted';
+                    } else {
+                        Report::where('id', $check_report->id)->update([
+                            'status' => 'Done'
+                        ]);
+                        $status = 'rejected';
+                    }
+                } 
+                if($report->votes->whereNotNull('accepted')->count() > $report->votes->whereNotNull('rejected')->count())
+                {
+                    Report::where('id', $check_report->id)->update([
+                        'status' => 'Done'
+                    ]);
+                    $report = Report::where('id', $check_report->id)->first();
+                    switch ($report->reportable_type)
+                    {
+                        case 'App\Models\User' :
+                            $user = User::where('id', $report->reportable_id)->with(['image', 'novels.image', 'novels.chapters.comments', 'novels.categories', 'novels.tags', 'novels.search', 'novels.comments', 'boxes', 'histories'])->first();
+                            if($user != null)
+                            {
                                 $old_user_image_url = $user->image->url;
                                 DB::transaction(function () use ($user) {
-                                    // pake observer harusnya
-                            
                                     // image
                                     $user->image->delete();
                             
                                     // report <- vote
                                     Vote::where('user_id', $user->id)->delete();
+                                    $reports = Report::where('user_id', $user->id)->get();
+                                    foreach($reports as $report)
+                                    {
+                                        $report->votes()->delete();
+                                    }
                                     Report::where('user_id', $user->id)->delete();
-                                    Report::where('reportable_type', 'App\Models\User')->where('reportable_id', $user->id)->delete();
-
+                                    // Report::where('reportable_type', 'App\Models\User')->where('reportable_id', $user->id)->delete();
+    
                                     // comment
+                                    $comments = Comment::where('user_id', $user->id)->get();
+                                    foreach($comments as $comment)
+                                    {
+                                        $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                        if($reported_comment != null)
+                                        {
+                                            $reported_comment->votes()->delete();
+                                            $reported_comment->delete();
+                                        }
+                                    }
                                     Comment::where('user_id', $user->id)->delete();
-
+    
                                     // history
                                     History::where('user_id', $user->id)->delete();
                             
                                     // box <- pivot
                                     foreach($user->boxes as $box)
                                     {
+                                        $reported_box = Report::where('reportable_type', 'App\Models\Box')->where('reportable_id', $box->id)->first();
+                                        if($reported_box != null)
+                                        {
+                                            $reported_box->votes()->delete();
+                                            $reported_box->delete();
+                                        }
                                         $box->tags()->detach();
                                         $box->categories()->detach();
                                         $box->novels()->detach();
@@ -77,22 +350,74 @@ class ReportController extends Controller
                                     $user->boxes()->delete();
                             
                                     // novel <- chapter <- image <- pivot
-                                    NovelCategoryTagSearch::whereIn('novel_id', $user->novels->pluck('id'));
                                     foreach($user->novels as $novel)
                                     {
-                                        Storage::delete('novel/'.$novel->image->url);
+                                        // image
                                         $novel->image->delete();
+    
+                                        // categories
                                         $novel->categories()->detach();
+    
+                                        // tags
                                         $novel->tags()->detach();
-                                        foreach($novel->chapters as $chapter)
+    
+                                        // search
+                                        $novel->search()->delete();
+    
+                                        // comment
+                                        $comments = $novel->comments()->get();
+                                        foreach($comments as $comment)
                                         {
-                                            $chapter->comments()->delete();
-                                            $chapter->delete();
+                                            $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                            if($reported_comment != null)
+                                            {
+                                                $reported_comment->votes()->delete();
+                                                $reported_comment->delete();
+                                            }
                                         }
                                         $novel->comments()->delete();
-                                        $novel->search()->delete();
+    
+                                        // chapter
+                                        $chapters = $novel->chapters()->get();
+                                        foreach($chapters as $chapter)
+                                        {
+                                            $reported_chapter = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
+                                            if($reported_chapter != null)
+                                            {
+                                                $reported_chapter->votes()->delete();
+                                                $reported_chapter->delete();
+                                            }
+                                        }
+                                        foreach($novel->chapters as $chapter)
+                                        {
+                                            $comments = $chapter->comments()->get();
+                                            foreach($comments as $comment)
+                                            {
+                                                $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                                if($reported_comment != null)
+                                                {
+                                                    $reported_comment->votes()->delete();
+                                                    $reported_comment->delete();
+                                                }
+                                            }
+                                            $chapter->comments()->delete();
+                                        }
+                                        $novel->chapters()->delete();
+    
+                                        // box
                                         $novel->boxes()->detach();
+    
+                                        // report <- vote
+                                        $reported_novel = Report::where('reportable_type', 'App\Models\Novel')->where('reportable_id', $novel->id)->first();
+                                        if($reported_novel != null)
+                                        {
+                                            $reported_novel->votes()->delete();
+                                            $reported_novel->delete();
+                                        }
+    
+                                        // history
                                         History::where('novel_id', $novel->id)->delete();
+                                        Storage::delete('novel/'.$novel->image->url);
                                     }
                                     $user->novels()->delete();
                             
@@ -100,9 +425,12 @@ class ReportController extends Controller
                                     $user->delete();
                                 });
                                 Storage::delete('profile/'.$old_user_image_url);
-                                break;
-                            case 'App\Models\Novel' :
-                                $novel = Novel::with(['image', 'chapters', 'categories', 'tags', 'comments', 'boxes'])->where('id', $report->reportable_id)->first();
+                            }
+                            break;
+                        case 'App\Models\Novel' :
+                            $novel = Novel::with(['image', 'chapters', 'categories', 'tags', 'comments', 'boxes'])->where('id', $report->reportable_id)->first();
+                            if($novel != null)
+                            {
                                 $old_novel_image_url = $novel->image->url;
                                 DB::transaction(function () use ($novel) {
                                     // image
@@ -116,23 +444,50 @@ class ReportController extends Controller
                             
                                     // search
                                     $novel->search()->delete();
-
+    
                                     // comment
+                                    $comments = $novel->comments()->get();
+                                    foreach($comments as $comment)
+                                    {
+                                        $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                        if($reported_comment != null)
+                                        {
+                                            $reported_comment->votes()->delete();
+                                            $reported_comment->delete();
+                                        }
+                                    }
                                     $novel->comments()->delete();
                             
                                     // chapter
+                                    $chapters = $novel->chapters()->get();
+                                    foreach($chapters as $chapter)
+                                    {
+                                        $reported_chapter = Report::where('reportable_type', 'App\Models\Chapter')->where('reportable_id', $chapter->id)->first();
+                                        if($reported_chapter != null)
+                                        {
+                                            $reported_chapter->votes()->delete();
+                                            $reported_chapter->delete();
+                                        }
+                                    }
                                     foreach($novel->chapters as $chapter)
                                     {
+                                        $comments = $chapter->comments()->get();
+                                        foreach($comments as $comment)
+                                        {
+                                            $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                            if($reported_comment != null)
+                                            {
+                                                $reported_comment->votes()->delete();
+                                                $reported_comment->delete();
+                                            }
+                                        }
                                         $chapter->comments()->delete();
                                     }
-                                    // Comment::whereIn('chapter_id', $novel->chapters->pluck('id'))->delete();
                                     $novel->chapters()->delete();
                             
                                     // box
                                     $novel->boxes()->detach();
-
-                                    // report <- vote
-
+    
                                     // history
                                     History::where('novel_id', $novel->id)->delete();
                             
@@ -140,145 +495,39 @@ class ReportController extends Controller
                                     $novel->delete();
                                 });
                                 Storage::delete('novel/'.$old_novel_image_url);
-                                break;
-                            case 'App\Models\Chapter' :
-                                $chapter = Chapter::where('id', $report->reportable_id)->first();
-                                $chapter->delete();
+                            }
+                            break;
+                        case 'App\Models\Chapter' :
+                            $chapter = Chapter::where('id', $report->reportable_id)->first();
+                            if($chapter != null)
+                            {
+                                DB::transaction(function () use ($chapter) {
+                                    $comments = $chapter->comments()->get();
+                                    foreach($comments as $comment)
+                                    {
+                                        $reported_comment = Report::where('reportable_type', 'App\Models\Comment')->where('reportable_id', $comment->id)->first();
+                                        if($reported_comment != null)
+                                        {
+                                            $reported_comment->votes()->delete();
+                                            $reported_comment->delete();
+                                        }
+                                    }
+                                });
                                 $chapter->comments()->delete();
-                                break;
-                            case 'App\Models\Box' :
-                                $box = Box::where('id', $report->reportable_id)->first();
+                                $chapter->delete();
+                            }
+                            break;
+                        case 'App\Models\Box' :
+                            $box = Box::where('id', $report->reportable_id)->first();
+                            if($box != null)
+                            {
                                 DB::transaction(function () use ($box) {
                                     $box->tags()->detach();
                                     $box->categories()->detach();
                                     $box->novels()->detach();
                                     $box->delete();
                                 });
-                                break;
-                            case 'App\Models\Comment' :
-                                Comment::where('id', $report->reportable_id)->delete();
-                                break;
-                            default:
-                                $status = 'error';
-                        }
-                        $status = 'accepted';
-                    }
-                } 
-                if($report->votes->whereNotNull('accepted')->count() > $report->votes->whereNotNull('rejected')->count())
-                {
-                    Report::where('id', $check_report->id)->update([
-                        'status' => 'Done'
-                    ]);
-                    $report = Report::where('id', $check_report->id)->first();
-                    switch ($report->reportable_type)
-                    {
-                        case 'App\Models\User' :
-                            $user = User::where('id', $report->reportable_id)->with(['image', 'novels.image', 'novels.chapters.comments', 'novels.categories', 'novels.tags', 'novels.search', 'novels.comments', 'boxes', 'histories'])->first();
-                            $old_user_image_url = $user->image->url;
-                            DB::transaction(function () use ($user) {
-                                // pake observer harusnya
-                        
-                                // image
-                                $user->image->delete();
-                        
-                                // report <- vote
-                                Vote::where('user_id', $user->id)->delete();
-                                Report::where('user_id', $user->id)->delete();
-                                Report::where('reportable_type', 'App\Models\User')->where('reportable_id', $user->id)->delete();
-
-                                // comment
-                                Comment::where('user_id', $user->id)->delete();
-
-                                // history
-                                History::where('user_id', $user->id)->delete();
-                        
-                                // box <- pivot
-                                foreach($user->boxes as $box)
-                                {
-                                    $box->tags()->detach();
-                                    $box->categories()->detach();
-                                    $box->novels()->detach();
-                                }
-                                $user->boxes()->delete();
-                        
-                                // novel <- chapter <- image <- pivot
-                                NovelCategoryTagSearch::whereIn('novel_id', $user->novels->pluck('id'));
-                                foreach($user->novels as $novel)
-                                {
-                                    Storage::delete('novel/'.$novel->image->url);
-                                    $novel->image->delete();
-                                    $novel->categories()->detach();
-                                    $novel->tags()->detach();
-                                    foreach($novel->chapters as $chapter)
-                                    {
-                                        $chapter->comments()->delete();
-                                        $chapter->delete();
-                                    }
-                                    $novel->comments()->delete();
-                                    $novel->search()->delete();
-                                    $novel->boxes()->detach();
-                                    History::where('novel_id', $novel->id)->delete();
-                                }
-                                $user->novels()->delete();
-                        
-                                // user
-                                $user->delete();
-                            });
-                            Storage::delete('profile/'.$old_user_image_url);
-                            break;
-                        case 'App\Models\Novel' :
-                            $novel = Novel::with(['image', 'chapters', 'categories', 'tags', 'comments', 'boxes'])->where('id', $report->reportable_id)->first();
-                            $old_novel_image_url = $novel->image->url;
-                            DB::transaction(function () use ($novel) {
-                                // image
-                                $novel->image->delete();
-                        
-                                // categories
-                                $novel->categories()->detach();
-                                
-                                // tags
-                                $novel->tags()->detach();
-                        
-                                // search
-                                $novel->search()->delete();
-
-                                // comment
-                                $novel->comments()->delete();
-                        
-                                // chapter
-                                foreach($novel->chapters as $chapter)
-                                {
-                                    $chapter->comments()->delete();
-                                }
-                                // Comment::whereIn('chapter_id', $novel->chapters->pluck('id'))->delete();
-                                $novel->chapters()->delete();
-                        
-                                // box
-                                $novel->boxes()->detach();
-
-                                // report <- vote
-
-                                // history
-                                History::where('novel_id', $novel->id)->delete();
-                        
-                                // novel
-                                $novel->delete();
-                            });
-                            Storage::delete('novel/'.$old_novel_image_url);
-                            break;
-                        case 'App\Models\Chapter' :
-                            $chapter = Chapter::where('id', $report->reportable_id)->first();
-                            $chapter->delete();
-                            $chapter->comments()->delete();
-                            break;
-                        case 'App\Models\Box' :
-                            $box = Box::where('id', $report->reportable_id)->first();
-                            DB::transaction(function () use ($box) {
-                                $box->tags()->detach();
-                                $box->categories()->detach();
-                                $box->novels()->detach();
-                                $box->delete();
-                            });
+                            }
                             break;
                         case 'App\Models\Comment' :
                             Comment::where('id', $report->reportable_id)->delete();

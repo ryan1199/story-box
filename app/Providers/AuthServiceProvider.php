@@ -69,13 +69,13 @@ class AuthServiceProvider extends ServiceProvider
             return $current_user->id === $novel->user_id ? Response::allow() : Response::denyWithStatus(401);
         });
         Gate::define('edit-chapter', function ($current_user, $novel, $chapter) {
-            return $current_user->id === $novel->user_id && $novel->id === $chapter->id ? Response::allow() : Response::denyWithStatus(401);
+            return $current_user->id === $novel->user_id && $novel->id === $chapter->novel_id ? Response::allow() : Response::denyWithStatus(401);
         });
         Gate::define('update-chapter', function ($current_user, $novel, $chapter) {
-            return $current_user->id === $novel->user_id && $novel->id === $chapter->id ? Response::allow() : Response::denyWithStatus(401);
+            return $current_user->id === $novel->user_id && $novel->id === $chapter->novel_id ? Response::allow() : Response::denyWithStatus(401);
         });
         Gate::define('delete-chapter', function ($current_user, $novel, $chapter) {
-            return $current_user->id === $novel->user_id && $novel->id === $chapter->id ? Response::allow() : Response::denyWithStatus(401);
+            return $current_user->id === $novel->user_id && $novel->id === $chapter->novel_id ? Response::allow() : Response::denyWithStatus(401);
         });
         Gate::define('delete-comment-chapter', function ($current_user, $comment) {
             return $current_user->id === $comment->user_id ? Response::allow() : Response::denyWithStatus(401);

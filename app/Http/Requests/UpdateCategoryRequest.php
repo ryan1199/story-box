@@ -23,7 +23,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'alpha_dash', Rule::unique('categories', 'name')->ignore($this->category->id), 'min:1', 'max:50']
+            'name' => ['required', 'alpha_dash', Rule::unique('categories', 'name')->ignore($this->category->id), Rule::unique('tags', 'name'), 'min:1', 'max:50']
         ];
     }
 

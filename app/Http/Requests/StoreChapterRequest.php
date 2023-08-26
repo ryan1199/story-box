@@ -32,11 +32,11 @@ class StoreChapterRequest extends FormRequest
     {
         return [
             'title.required' => 'Please input title for the chapter',
-            'title.string' => 'Please title only contain letter and whitespace',
+            'title.string' => 'Please title only contain string',
             'title.min' => 'Please title min length is 2 digit',
             'title.max' => 'Please title max length is 500 digit',
             'content.required' => 'Please input content for the chapter',
-            'content.string' => 'Please content only contain letter and whitespace',
+            'content.string' => 'Please content only contain string',
             'content.min' => 'Please content min length is 2 digit',
             'content.max' => 'Please content max length is 10000 digit',
         ];

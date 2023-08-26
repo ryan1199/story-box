@@ -89,7 +89,7 @@
                         <span class="w-full form-error">{{ $message }}</span>
                     @enderror
                 </div>
-                <button type="submit" class="form-button w-full h-fit p-4 text-gray-100 bg-sky-800 hover:bg-sky-700 active:bg-sky-500 rounded-lg">Add novel</button>
+                <button type="submit" class="form-button w-full h-fit p-4 text-gray-100 bg-sky-800 hover:bg-sky-700 active:bg-sky-500 rounded-lg">Add box</button>
             </form>
         </div>
     @endauth
